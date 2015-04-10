@@ -1,7 +1,7 @@
 # docker-filezilla
 
 On Docker hub [filezilla](https://registry.hub.docker.com/u/yantis/filezilla)
-on Github [filezilla](https://github.com/yantis/filezilla)
+on Github [filezilla](https://github.com/yantis/docker-filezilla)
 
 This is Filezilla on Docker. It has three modes: Local (no ssh server), remote with ssh server, as
 well as an optional script for an instant launch AWS EC2 for quick file transfers with 
@@ -14,7 +14,7 @@ The recommended way to run this container looks like this. This example launches
 if it was another program on your computer.
 
 ```bash
-xhost +si:localuser:$(whoami) >/dev/null
+xhost +si:localuser:$(whoami)
 docker run \
         -d \
         -e DISPLAY \
@@ -34,6 +34,17 @@ $ xhost +si:localuser:yourusername
 Allows your local user to access the xsocket. Change yourusername or use $(whoami)
 or $USER if your shell supports it.
 
+
+```bash
+docker run \
+           -d \
+           -e DISPLAY \
+           -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+           -u docker \
+           -v /:/host \
+           -v $HOME/docker-data/filezilla:/home/docker/.config/filezilla/ \
+           yantis/filezilla filezilla
+```
 This follows these docker conventions:
 
 * `-d` run in daemon mode. 
