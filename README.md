@@ -3,9 +3,9 @@
 On Docker hub [filezilla](https://registry.hub.docker.com/u/yantis/filezilla)
 on Github [filezilla](https://github.com/yantis/filezilla)
 
-This is Filezilla on Docker. It has three modes. Local (no ssh server), remote ssh server, as
+This is Filezilla on Docker. It has three modes: Local (no ssh server), remote with ssh server, as
 well as an optional script for an instant launch AWS EC2 for quick file transfers with 
-storage to EBS volume (Amazon Elastic Block Store). Check out the aws-filezilla.sh script for this.
+storage to EBS volume (Amazon Elastic Block Store). Check out the [aws-filezilla.sh](https://github.com/yantis/docker-filezilla/blob/master/aws-filezilla.sh) script for this.
 
 
 ## Usage (Local)
@@ -53,7 +53,7 @@ server instead as a default.
 ## Usage (Remote SSH)
 
 The recommended way to run this container over SSH looks like this. This example launches an high performance SSH
-server with X-forwarding enabled. Which you can ssh -X (or -Y) into. Check out the aws-filezilla.sh script for an example of this. 
+server with X-forwarding enabled. Which you can ssh -X (or -Y) into. Check out the [aws-filezilla.sh](https://github.com/yantis/docker-filezilla/blob/master/aws-filezilla.sh) script for an example of this. 
 
 
 ```bash
