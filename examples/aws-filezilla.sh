@@ -48,8 +48,8 @@ ID=$(aws ec2 run-instances \
   --subnet-id ${SUBNETID} | \
     grep InstanceId | awk -F\" '{print $4}')
 
-# Sleep 5 seconds here. Just to give it time to be created.
-sleep 5
+# Sleep 10 seconds here. Just to give it time to be created.
+sleep 10
 echo "Instance ID: $ID"
 
 
@@ -67,9 +67,9 @@ while [ 1 ]; do
   sleep 1
 done
 
-# Sleep 15 seconds here. To give it even more time for the instance
+# Sleep 30 seconds here. To give it even more time for the instance
 # to get to a "running state" so we can attach the volume properly.
-sleep 15
+sleep 30
 
 # Attach our EBS volume here so we can save some stuff.
 aws ec2 attach-volume \
