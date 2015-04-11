@@ -86,7 +86,6 @@ ssh -o ConnectionAttempts=255 \
 EOF
 
 # Now that is is launched go ahead and connect to our new server
-# Feel free to configure the flags below (ie: window-size)
 ssh -Y \
     -o ConnectionAttempts=255 \
     -o StrictHostKeyChecking=no \
