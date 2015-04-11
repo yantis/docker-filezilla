@@ -1,26 +1,39 @@
 #!/bin/bash
 
 ############################################################
-# Copyright (c) 2015 Jonathan Yantis
-# Released under the MIT license
+#         Copyright (c) 2015 Jonathan Yantis               #
+#          Released under the MIT license                  #
 ############################################################
-
+#                                                          #
+#
 # If you want to try this out just use this script to launch
 # and connect on an AWS EC2 instance.
-
+#
+# IMPORTANT: make sure to change the userdefined variables
+#
 # You must have aws cli installed.
 # https://github.com/aws/aws-cli
-
+#
 # If using Arch Linux it is on the AUR as aws-cli
-
+#
 # This uses just basic Amazon Linux for simplicity.
 # Amazon Linux AMI 2015.03.0 x86_64 HVM 
+#
+# Usage:
+# aws-filezilla.sh volumeid
+#
+# Example:
+# aws-filezilla.sh vol-f49d8ca2
+#                                                          #
+############################################################
+
+
 ############################################################
 
 # USER DEFINABLE (NOT OPTIONAL)
 KEYNAME=yantisec2 # Private key name
 SUBNETID=subnet-d260adb7 # VPC Subnet ID
-VOLUMEID=vol-f39d8de2 # (this is your external volume to save your files to)
+VOLUMEID=$1 # (this is your external volume to save your files to)
 
 # USER DEFINABLE (OPTIONAL)
 REGION=us-west-2
@@ -78,8 +91,8 @@ ssh -o ConnectionAttempts=255 \
   sudo docker run \
     -d \
     -v /home/ec2-user/.ssh/authorized_keys:/authorized_keys:ro \
-    -v /home/ec2-user/external/:/home/docker/external \
-    -v /home/ec2-user/external/.filezilla:/home/docker/.config/filezilla/ \
+    -v /home/ec2-user/external/:/root/external \
+    -v /home/ec2-user/external/.filezilla:/root/.config/filezilla/ \
     -p 49158:22 \
     yantis/filezilla
   exit
