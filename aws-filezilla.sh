@@ -20,7 +20,7 @@
 # USER DEFINABLE (NOT OPTIONAL)
 KEYNAME=yantisec2 # Private key name
 SUBNETID=subnet-d260adb7 # VPC Subnet ID
-VOLUMEID=vol-4e5f525f # (this is your external volume to save your files to)
+VOLUMEID=vol-f39d8de2 # (this is your external volume to save your files to)
 
 # USER DEFINABLE (OPTIONAL)
 REGION=us-west-2
@@ -54,7 +54,8 @@ while [ 1 ]; do
   sleep 1
 done
 
-# Sleep 15 seconds here. To g To give it even more time for the volume
+# Sleep 15 seconds here. To give it even more time for the instance
+# to get to a "running state" so we can attach the volume properly.
 sleep 15
 
 # Attach our EBS volume here so we can save some stuff.
