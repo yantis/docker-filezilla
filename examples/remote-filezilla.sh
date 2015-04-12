@@ -17,6 +17,18 @@
 #                                                          #
 ############################################################
 
+# Exit the script if any statements returns a non true (0) value.
+set -e
+
+# Exit the script on any uninitalized variables.
+set -u
+
+# Exit the script if the user didn't specify at least two arguments.
+if [ "$#" -ne 2 ]; then
+  echo "Error: You need to specifiy the host and user"
+  exit 1
+fi
+
 USER_NAME=$1
 HOST_NAME=$2
 

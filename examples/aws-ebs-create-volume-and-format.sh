@@ -26,6 +26,18 @@ REGION=us-west-2
 AVAILABILITY_ZONE=us-west-2a
 IMAGEID=ami-e7527ed7
 
+# Exit the script if any statements returns a non true (0) value.
+set -e
+
+# Exit the script on any uninitalized variables.
+set -u
+
+# Exit the script if the user didn't specify at least one argument.
+if [ "$#" -ne 1 ]; then
+  echo "Error: You need to specifiy the volume size in GB (ie: 50)"
+  exit 1
+fi
+
 # Create our new instance
 ID=$(aws ec2 run-instances \
             --image-id ${IMAGEID} \
@@ -35,8 +47,8 @@ ID=$(aws ec2 run-instances \
             --subnet-id ${SUBNETID} | \
      grep InstanceId | awk -F\" '{print $4}')
 
-# Sleep 5 seconds here. Just to give it time to be created.
-sleep 5
+# Sleep 10 seconds here. Just to give it time to be created.
+sleep 10
 echo "Instance ID: $ID"
 
 # Create our new volume
@@ -47,8 +59,8 @@ VOLUMEID=$(aws ec2 create-volume \
   --volume-type gp2 | \
   grep VolumeId | awk -F\" '{print $4}')
 
-# Sleep 10 seconds here. Just to give it time to be created.
-sleep 10
+# Sleep 5 seconds here. Just to give it time to be created.
+sleep 5
 echo "Volume ID: $VOLUMEID"
 
 # Query every second until we get our IP.
