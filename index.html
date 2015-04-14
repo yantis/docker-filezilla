@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Docker-filezilla by yantis</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Docker-filezilla</h1>
+      <h2 class="project-tagline">Dockerized Filezilla</h2>
+      <a href="https://github.com/yantis/docker-filezilla" class="btn">View on GitHub</a>
+      <a href="https://github.com/yantis/docker-filezilla/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/yantis/docker-filezilla/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <h1>
+<a id="docker-filezilla" class="anchor" href="#docker-filezilla" aria-hidden="true"><span class="octicon octicon-link"></span></a>docker-filezilla</h1>
+
+<p>On Docker hub <a href="https://registry.hub.docker.com/u/yantis/filezilla">filezilla</a>
+on Github <a href="https://github.com/yantis/docker-filezilla">filezilla</a></p>
+
+<p>This is Filezilla on Docker. It has three modes: Local (no ssh server), remote with ssh server, as
+well as an optional script for an instant launch AWS EC2 for quick file transfers with 
+storage to EBS volume (Amazon Elastic Block Store). Check out the <a href="https://github.com/yantis/docker-filezilla/blob/master/examples/aws-filezilla.sh">aws-filezilla.sh</a> script for this.
+Also, there is a script to auto create and format your EBS volume <a href="https://github.com/yantis/docker-filezilla/blob/master/examples/aws-ebs-create-volume-and-format.sh">aws-ebs-create-volume-and-format.sh</a></p>
+
+<h2>
+<a id="usage-local" class="anchor" href="#usage-local" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage (Local)</h2>
+
+<p>The recommended way to run this container looks like this. This example launches Filezilla seamlessly as
+if it was another program on your computer.</p>
+
+<div class="highlight highlight-bash"><pre>xhost +si:localuser:<span class="pl-s"><span class="pl-pds">$(</span>whoami<span class="pl-pds">)</span></span>
+docker run \
+        -d \
+        -e DISPLAY \
+        -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+        -u docker \
+        -v /:/host \
+        -v <span class="pl-smi">$HOME</span>/docker-data/filezilla:/home/docker/.config/filezilla/ \
+        yantis/filezilla filezilla</pre></div>
+
+<h2>
+<a id="breakdown-local" class="anchor" href="#breakdown-local" aria-hidden="true"><span class="octicon octicon-link"></span></a>Breakdown (Local)</h2>
+
+<div class="highlight highlight-bash"><pre>$ xhost +si:localuser:yourusername</pre></div>
+
+<p>Allows your local user to access the xsocket. Change yourusername or use $(whoami)
+or $USER if your shell supports it.</p>
+
+<div class="highlight highlight-bash"><pre>docker run \
+           -d \
+           -e DISPLAY \
+           -v /tmp/.X11-unix:/tmp/.X11-unix:ro \
+           -u docker \
+           -v /:/host \
+           -v <span class="pl-smi">$HOME</span>/docker-data/filezilla:/home/docker/.config/filezilla/ \
+           yantis/filezilla filezilla</pre></div>
+
+<p>This follows these docker conventions:</p>
+
+<ul>
+<li>
+<code>-d</code> run in daemon mode. </li>
+<li>
+<code>-e DISPLAY</code> sets the host display to the local machines display.</li>
+<li>
+<code>-v /tmp/.X11-unix:/tmp/.X11-unix:ro</code> bind mounts the X11 socks on your local machine
+to the containers and makes it read only.</li>
+<li>
+<code>-u docker</code> sets the user to docker. (or you could do root as well)</li>
+<li>
+<code>-v /:/host</code> Shares the entire host hard drive with the container (you might not want to be
+that permissive so just change "/" to whatever path you want to allow.
+(This is optional but since Filezilla doesn't support FXP you might want to save the files somewhere)</li>
+<li>
+<code>-v ~/docker-data/filezilla:/home/docker/.config/filezilla/</code> This is where to save your config files.
+If you have no interest in saving them then it is optional.</li>
+<li>
+<code>yantis/filezilla filezilla</code> You need to call filezilla because if you do not it will a launch the ssh
+server instead as a default.</li>
+</ul>
+
+<h2>
+<a id="usage-remote-ssh" class="anchor" href="#usage-remote-ssh" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage (Remote SSH)</h2>
+
+<p>The recommended way to run this container over SSH looks like this. This example launches an high performance SSH
+server with X-forwarding enabled. Which you can ssh -X (or -Y) into. Check out the <a href="https://github.com/yantis/docker-filezilla/blob/master/examples/remote-filezilla.sh">remote-filezilla</a>
+and the <a href="https://github.com/yantis/docker-filezilla/blob/master/examples/aws-filezilla.sh">aws-filezilla.sh</a> script for an example of this.</p>
+
+<div class="highlight highlight-bash"><pre>docker run \
+    -ti \
+    --rm \
+    -v <span class="pl-smi">$HOME</span>/.ssh/authorized_keys:/authorized_keys:ro \
+    -p 49158:22 \
+    -v <span class="pl-k">~</span>/docker-data/filezilla:/home/docker/.config/filezilla/ \
+    yantis/filezilla</pre></div>
+
+<h2>
+<a id="breakdown-remote-ssh" class="anchor" href="#breakdown-remote-ssh" aria-hidden="true"><span class="octicon octicon-link"></span></a>Breakdown (Remote SSH)</h2>
+
+<p>This follows these docker conventions:</p>
+
+<ul>
+<li>
+<code>-ti</code> will run an interactive session that can be terminated with CTRL+C.</li>
+<li>
+<code>--rm</code> will run a temporary session that will make sure to remove the container on exit.</li>
+<li>
+<code>-v $HOME/.ssh/authorized_keys:/authorized_keys:ro</code> Optionaly share your public keys with the host.
+This is particularlly useful when you are running this on another server that already has SSH. Like an 
+Amazon EC2 instance. WARNING: If you don't use this then it will just default to the user pass of docker/docker
+(If you do specify authorized keys it will disable all password logins to keep it secure).</li>
+<li>
+<code>-v ~/docker-data/filezilla:/home/docker/.config/filezilla/</code> This is where to save your config files.
+If you have no interest in saving them then it is optional.</li>
+<li>
+<code>-v /:/host</code> Shares the entire host hard drive with the container (you might not want to be
+that permissive so just change "/" to whatever path you want to allow)</li>
+<li>
+<code>yantis/filezilla</code> the default mode is SSH so no need to run any commands.</li>
+</ul>
+
+<p>Here is a screenshot of Filezilla running on Docker.
+<img src="http://yantis-scripts.s3.amazonaws.com/Screenshot_2015-04-10_02-01-50.png" alt=""></p>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/yantis/docker-filezilla">Docker-filezilla</a> is maintained by <a href="https://github.com/yantis">yantis</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-61848149-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
+
